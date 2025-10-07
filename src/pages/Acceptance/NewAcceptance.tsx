@@ -192,17 +192,18 @@ import React, { useState } from 'react'
         try {
           setLoading(true)
           const template = await getTemplateById(templateId)
-          
+
           const maxPositionNumber = Math.max(0, ...receptionData.map(item => item.positionNumber))
           const newPositionNumber = maxPositionNumber + 1
 
           const firstCurrentRow = receptionData.length > 0 ? receptionData[0] : null
+          const currentDate = new Date().toISOString().split('T')[0]
 
           const newRows: ReceptionExcelRow[] = template.reception_template_items.map(item => ({
             receptionId: crypto.randomUUID(),
-            receptionDate: firstCurrentRow?.receptionDate || template.reception_date,
+            receptionDate: firstCurrentRow?.receptionDate || currentDate,
             receptionNumber: firstCurrentRow?.receptionNumber || 'Необходимо заполнить значение',
-            counterpartyName: firstCurrentRow?.counterpartyName || template.counterparty_name,
+            counterpartyName: firstCurrentRow?.counterpartyName || 'Необходимо заполнить контрагента',
             subdivisionName: item.subdivision_name,
             positionNumber: newPositionNumber,
             serviceName: item.service_name,
