@@ -6,6 +6,18 @@ import { Alert } from '../../components/ui/Alert'
 import { getReceptions } from '../../services/receptionService'
 import { CreditCard as Edit, Package } from 'lucide-react'
 
+const formatDate = (dateString: string): string => {
+  const date = new Date(dateString)
+  const months = [
+    'января', 'февраля', 'марта', 'апреля', 'мая', 'июня',
+    'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'
+  ]
+  const day = date.getDate()
+  const month = months[date.getMonth()]
+  const year = date.getFullYear()
+  return `${day} ${month} ${year} г.`
+}
+
 interface Reception {
   id: string
   reception_number: string
@@ -103,11 +115,7 @@ export const Archive: React.FC = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-900">
-                        {new Date(reception.reception_date).toLocaleDateString('ru-RU', {
-                          year: 'numeric',
-                          month: 'long',
-                          day: 'numeric',
-                        })}
+                        {formatDate(reception.reception_date)}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">

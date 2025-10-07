@@ -667,6 +667,18 @@ import React, { useState } from 'react'
       )
     }
 
+    const formatDate = (dateString: string): string => {
+      const date = new Date(dateString)
+      const months = [
+        'января', 'февраля', 'марта', 'апреля', 'мая', 'июня',
+        'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'
+      ]
+      const day = date.getDate()
+      const month = months[date.getMonth()]
+      const year = date.getFullYear()
+      return `${day} ${month} ${year} г.`
+    }
+
     export const ReceptionPreview: React.FC<ReceptionPreviewProps> = ({ data, onDataChange, onAddGroupClick, onDuplicatePosition, onDeletePosition, onAddItemToGroup, onSaveAsTemplate, onReceptionNumberUpdate, onCounterpartyUpdate }) => {
       const [isEditingReceptionNumber, setIsEditingReceptionNumber] = useState(false)
       const [editReceptionNumber, setEditReceptionNumber] = useState('')
@@ -815,7 +827,7 @@ import React, { useState } from 'react'
               </div>
               <div>
                 <span className="text-gray-500">Дата приемки:</span>
-                <p className="font-medium">{firstRow.receptionDate}</p>
+                <p className="font-medium">{formatDate(firstRow.receptionDate)}</p>
               </div>
               <div>
                 <span className="text-gray-500">Контрагент:</span>

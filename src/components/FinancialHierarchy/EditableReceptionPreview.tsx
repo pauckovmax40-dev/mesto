@@ -3,6 +3,18 @@ import { ChevronDown, ChevronRight, CreditCard as Edit, Trash2, Plus, Save, X } 
 import { Button } from '../ui/Button'
 import { Input } from '../ui/Input'
 
+const formatDate = (dateString: string): string => {
+  const date = new Date(dateString)
+  const months = [
+    'января', 'февраля', 'марта', 'апреля', 'мая', 'июня',
+    'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'
+  ]
+  const day = date.getDate()
+  const month = months[date.getMonth()]
+  const year = date.getFullYear()
+  return `${day} ${month} ${year} г.`
+}
+
 export interface ReceptionItem {
   id: string
   item_description: string
@@ -616,7 +628,7 @@ export const EditableReceptionPreview: React.FC<EditableReceptionPreviewProps> =
           <div>
             <span className="text-gray-500">Дата приемки:</span>
             <p className="font-medium">
-              {new Date(reception.reception_date).toLocaleDateString('ru-RU')}
+              {formatDate(reception.reception_date)}
             </p>
           </div>
           <div>
