@@ -13,6 +13,18 @@ import React, { useState } from 'react'
     import { LoadTemplateModal } from '../../components/Acceptance/LoadTemplateModal'
     import { getTemplateById, savePositionAsTemplate } from '../../services/templateService'
 
+    const formatDate = (dateString: string): string => {
+      const date = new Date(dateString)
+      const months = [
+        'января', 'февраля', 'марта', 'апреля', 'мая', 'июня',
+        'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'
+      ]
+      const day = date.getDate()
+      const month = months[date.getMonth()]
+      const year = date.getFullYear()
+      return `${day} ${month} ${year} г.`
+    }
+
     export const NewAcceptance: React.FC = () => {
       const [receptionData, setReceptionData] = useState<ReceptionExcelRow[]>([])
       const [loading, setLoading] = useState(false)
@@ -162,6 +174,15 @@ import React, { useState } from 'react'
         setSuccessMessage(`Номер приемки изменен на "${newReceptionNumber}"`)
       }
 
+      const handleReceptionDateUpdate = (newReceptionDate: string) => {
+        const newData = receptionData.map(item => ({
+          ...item,
+          receptionDate: newReceptionDate
+        }))
+        setReceptionData(newData)
+        setSuccessMessage(`Дата приемки изменена на "${formatDate(newReceptionDate)}"`)
+      }
+
       const handleCounterpartyUpdate = (newCounterpartyName: string) => {
         const newData = receptionData.map(item => ({
           ...item,
@@ -275,6 +296,7 @@ import React, { useState } from 'react'
                   onAddItemToGroup={receptionData.length > 0 ? handleAddItemToGroup : undefined}
                   onSaveAsTemplate={receptionData.length > 0 ? handleOpenSaveTemplateModal : undefined}
                   onReceptionNumberUpdate={receptionData.length > 0 ? handleReceptionNumberUpdate : undefined}
+                  onReceptionDateUpdate={receptionData.length > 0 ? handleReceptionDateUpdate : undefined}
                   onCounterpartyUpdate={receptionData.length > 0 ? handleCounterpartyUpdate : undefined}
                 />
               )}

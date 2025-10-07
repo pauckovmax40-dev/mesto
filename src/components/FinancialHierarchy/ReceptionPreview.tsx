@@ -13,6 +13,7 @@ import React, { useState } from 'react'
       onAddItemToGroup?: (positionNumber: number, workGroup: string) => void
       onSaveAsTemplate?: (positionNumber: number) => void
       onReceptionNumberUpdate?: (newReceptionNumber: string) => void
+      onReceptionDateUpdate?: (newReceptionDate: string) => void
       onCounterpartyUpdate?: (counterpartyName: string) => void
     }
 
@@ -679,9 +680,11 @@ import React, { useState } from 'react'
       return `${day} ${month} ${year} г.`
     }
 
-    export const ReceptionPreview: React.FC<ReceptionPreviewProps> = ({ data, onDataChange, onAddGroupClick, onDuplicatePosition, onDeletePosition, onAddItemToGroup, onSaveAsTemplate, onReceptionNumberUpdate, onCounterpartyUpdate }) => {
+    export const ReceptionPreview: React.FC<ReceptionPreviewProps> = ({ data, onDataChange, onAddGroupClick, onDuplicatePosition, onDeletePosition, onAddItemToGroup, onSaveAsTemplate, onReceptionNumberUpdate, onReceptionDateUpdate, onCounterpartyUpdate }) => {
       const [isEditingReceptionNumber, setIsEditingReceptionNumber] = useState(false)
       const [editReceptionNumber, setEditReceptionNumber] = useState('')
+      const [isEditingReceptionDate, setIsEditingReceptionDate] = useState(false)
+      const [editReceptionDate, setEditReceptionDate] = useState('')
       const [isCounterpartyModalOpen, setIsCounterpartyModalOpen] = useState(false)
       if (data.length === 0) {
         return (
@@ -790,6 +793,22 @@ import React, { useState } from 'react'
         }
       }
 
+      const handleReceptionDateSave = () => {
+        if (onReceptionDateUpdate && editReceptionDate.trim() && editReceptionDate !== firstRow.receptionDate) {
+          onReceptionDateUpdate(editReceptionDate.trim())
+        }
+        setIsEditingReceptionDate(false)
+      }
+
+      const handleReceptionDateKeyDown = (e: React.KeyboardEvent) => {
+        if (e.key === 'Enter') {
+          handleReceptionDateSave()
+        } else if (e.key === 'Escape') {
+          setEditReceptionDate(firstRow.receptionDate)
+          setIsEditingReceptionDate(false)
+        }
+      }
+
       return (
         <div className="space-y-6">
           <div className="bg-gray-50 p-4 rounded-lg">
@@ -827,7 +846,33 @@ import React, { useState } from 'react'
               </div>
               <div>
                 <span className="text-gray-500">Дата приемки:</span>
-                <p className="font-medium">{formatDate(firstRow.receptionDate)}</p>
+                {isEditingReceptionDate && onReceptionDateUpdate ? (
+                  <input
+                    type="date"
+                    value={editReceptionDate}
+                    onChange={(e) => setEditReceptionDate(e.target.value)}
+                    onBlur={handleReceptionDateSave}
+                    onKeyDown={handleReceptionDateKeyDown}
+                    autoFocus
+                    className="w-full px-2 py-1 text-sm font-medium border border-blue-500 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 mt-1"
+                  />
+                ) : (
+                  <div className="flex items-center gap-2 mt-1">
+                    <p className="font-medium">{formatDate(firstRow.receptionDate)}</p>
+                    {onReceptionDateUpdate && (
+                      <button
+                        onClick={() => {
+                          setEditReceptionDate(firstRow.receptionDate)
+                          setIsEditingReceptionDate(true)
+                        }}
+                        className="text-gray-400 hover:text-blue-600 transition"
+                        title="Редактировать дату приемки"
+                      >
+                        <Edit2 size={14} />
+                      </button>
+                    )}
+                  </div>
+                )}
               </div>
               <div>
                 <span className="text-gray-500">Контрагент:</span>
